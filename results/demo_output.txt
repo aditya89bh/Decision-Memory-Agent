@@ -1,0 +1,22 @@
+=== Decision Memory Agent Demo ===
+
+--- Scenario 1 ---
+Context: {'task': 'cnc_machine_loading', 'risk_level': 'high', 'robot_confidence': 'low'}
+Selected option: escalate_to_human
+Outcome: failure
+Rationale: Selected the highest-scoring option after applying memory-based adjustments.
+
+--- Scenario 2 ---
+Context: {'task': 'cnc_machine_loading', 'risk_level': 'high', 'robot_confidence': 'low'}
+Selected option: pause_and_inspect
+Outcome: success
+Rationale: Selected the highest-scoring option after applying memory-based adjustments.
+
+--- Memory Summary ---
+Record 1: high-risk CNC loading decision stored with failure outcome.
+Record 2: similar high-risk CNC loading decision adjusted by memory and stored with success outcome.
+
+--- Evaluation Summary ---
+decision_changed: true
+outcome_improved: true
+memory_influenced_decision: true
