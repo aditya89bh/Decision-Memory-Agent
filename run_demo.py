@@ -1,9 +1,9 @@
-from memory_store import MemoryStore
-from decision_agent import DecisionAgent
+from decision_memory import DecisionAgent, Evaluator, MemoryStore
 
 
 memory_store = MemoryStore()
 agent = DecisionAgent(memory_store)
+evaluator = Evaluator()
 
 
 print('\n=== Decision Memory Agent Demo ===\n')
@@ -57,3 +57,9 @@ for index, record in enumerate(memory_store.all(), start=1):
     print(f'Record {index}:')
     print(record.to_dict())
     print()
+
+
+print('--- Evaluation Summary ---')
+summary = evaluator.summarize(record_1, record_2)
+for key, value in summary.items():
+    print(f'{key}: {value}')
