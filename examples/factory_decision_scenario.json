@@ -1,0 +1,16 @@
+{
+  "scenario": "cnc_machine_loading",
+  "description": "A robot must decide what to do when confidence is low and operational risk is high.",
+  "context": {
+    "task": "cnc_machine_loading",
+    "risk_level": "high",
+    "robot_confidence": "low"
+  },
+  "options": [
+    "continue_current_task",
+    "pause_and_inspect",
+    "switch_to_safe_task",
+    "escalate_to_human"
+  ],
+  "expected_behavior": "A failed prior decision should reduce the score of that same option in a future similar context."
+}
