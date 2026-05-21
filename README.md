@@ -75,11 +75,17 @@ Future Decision Influence
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements.txt
-PYTHONPATH=src python3 run_demo.py
+python -m pip install -e .[dev]
+python run_demo.py
 ```
 
 ## Run a scenario from JSON
+
+```bash
+decision-memory examples/factory_decision_scenario.json
+```
+
+You can also run the module directly during development:
 
 ```bash
 PYTHONPATH=src python3 -m decision_memory.cli examples/factory_decision_scenario.json
@@ -90,7 +96,7 @@ The CLI loads the scenario, runs a deterministic decision, prints the context, s
 ## Run tests
 
 ```bash
-PYTHONPATH=src pytest
+pytest
 ```
 
 ## Demo output
