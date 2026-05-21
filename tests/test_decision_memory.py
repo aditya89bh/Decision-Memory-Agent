@@ -1,3 +1,6 @@
+import pytest
+from pydantic import ValidationError
+
 from decision_memory import DecisionAgent, DecisionRecord, Evaluator, MemoryStore
 
 
@@ -15,6 +18,52 @@ def test_decision_record_serializes_to_dict():
     assert data['context']['risk_level'] == 'high'
     assert data['selected_option'] == 'pause_and_inspect'
     assert data['outcome'] == 'success'
+
+
+def test_decision_record_creates_valid_typed_model():
+    record = DecisionRecord(
+        context={'risk_level': 'high'},
+        options=['continue_current_task', 'pause_and_inspect'],
+        selected_option='pause_and_inspect',
+        rationale={'reason': 'Safer under high risk'},
+    )
+
+    assert record.context == {'risk_level': 'high'}
+    assert record.options == ['continue_current_task', 'pause_and_inspect']
+    assert record.selected_option == 'pause_and_inspect'
+    assert record.rationale == {'reason': 'Safer under high risk'}
+    assert record.outcome is None
+
+
+def test_decision_record_rejects_invalid_data():
+    with pytest.raises(ValidationError):
+        DecisionRecord(
+            context=['not', 'a', 'dict'],
+            options=['continue_current_task'],
+            selected_option='continue_current_task',
+            rationale={},
+        )
+
+    with pytest.raises(ValidationError):
+        DecisionRecord(
+            context={'risk_level': 'high'},
+            options='continue_current_task',
+            selected_option='continue_current_task',
+            rationale={},
+        )
+
+
+def test_decision_record_json_serialization_is_compatible():
+    record = DecisionRecord(
+        context={'risk_level': 'high'},
+        options=['continue_current_task', 'pause_and_inspect'],
+        selected_option='pause_and_inspect',
+        rationale={'scored_options': [('pause_and_inspect', 2)]},
+        outcome='success',
+    )
+
+    assert record.to_dict()['rationale']['scored_options'] == [('pause_and_inspect', 2)]
+    assert record.to_json_dict()['rationale']['scored_options'] == [['pause_and_inspect', 2]]
 
 
 def test_memory_store_retrieves_by_context_key():

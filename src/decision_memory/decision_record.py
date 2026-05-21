@@ -1,16 +1,26 @@
-class DecisionRecord:
-    def __init__(self, context, options, selected_option, rationale, outcome=None):
-        self.context = context
-        self.options = options
-        self.selected_option = selected_option
-        self.rationale = rationale
-        self.outcome = outcome
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict
+
+
+class DecisionRecord(BaseModel):
+    """Typed record of a decision, its reasoning, and eventual outcome."""
+
+    context: dict[str, Any]
+    options: list[str]
+    selected_option: str
+    rationale: dict[str, Any]
+    outcome: str | None = None
+
+    model_config = ConfigDict(
+        extra='forbid',
+        validate_assignment=True,
+    )
 
     def to_dict(self):
-        return {
-            'context': self.context,
-            'options': self.options,
-            'selected_option': self.selected_option,
-            'rationale': self.rationale,
-            'outcome': self.outcome,
-        }
+        """Return the legacy dictionary representation used by demos and stores."""
+        return self.model_dump(mode='python')
+
+    def to_json_dict(self):
+        """Return a JSON-friendly dictionary for API or persistence boundaries."""
+        return self.model_dump(mode='json')
