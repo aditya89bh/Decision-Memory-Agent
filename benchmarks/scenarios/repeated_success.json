@@ -1,0 +1,17 @@
+{
+  "scenario": "repeated_success",
+  "description": "A stable scenario where a successful option should be reinforced by memory.",
+  "runs": 4,
+  "context": {
+    "task": "routine_quality_check",
+    "risk_level": "benchmark_repeated_success",
+    "robot_confidence": "medium"
+  },
+  "options": ["continue_current_task", "pause_and_inspect", "escalate_to_human"],
+  "outcomes": {
+    "escalate_to_human": ["success", "success", "success", "success"],
+    "pause_and_inspect": ["success", "success", "success", "success"],
+    "continue_current_task": ["failure", "failure", "failure", "failure"]
+  },
+  "default_outcome": "failure"
+}

@@ -1,0 +1,17 @@
+{
+  "scenario": "repeated_failure",
+  "description": "A high-risk task where escalation repeatedly fails, forcing memory to move away from it.",
+  "runs": 4,
+  "context": {
+    "task": "hazardous_pick",
+    "risk_level": "benchmark_repeated_failure",
+    "robot_confidence": "low"
+  },
+  "options": ["continue_current_task", "pause_and_inspect", "escalate_to_human"],
+  "outcomes": {
+    "escalate_to_human": ["failure", "failure", "failure", "failure"],
+    "pause_and_inspect": ["success", "success", "success", "success"],
+    "continue_current_task": ["failure", "failure", "failure", "failure"]
+  },
+  "default_outcome": "failure"
+}

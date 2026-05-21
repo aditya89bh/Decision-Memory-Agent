@@ -1,0 +1,18 @@
+{
+  "scenario": "escalation_heavy",
+  "description": "A scenario where escalation is consistently successful and should dominate future choices.",
+  "runs": 5,
+  "context": {
+    "task": "operator_required_handoff",
+    "risk_level": "benchmark_escalation_heavy",
+    "robot_confidence": "low"
+  },
+  "options": ["continue_current_task", "pause_and_inspect", "switch_to_safe_task", "escalate_to_human"],
+  "outcomes": {
+    "escalate_to_human": ["success", "success", "success", "success", "success"],
+    "pause_and_inspect": ["failure", "failure", "failure", "failure", "failure"],
+    "switch_to_safe_task": ["failure", "failure", "failure", "failure", "failure"],
+    "continue_current_task": ["failure", "failure", "failure", "failure", "failure"]
+  },
+  "default_outcome": "failure"
+}

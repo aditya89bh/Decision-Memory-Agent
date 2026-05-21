@@ -1,0 +1,17 @@
+{
+  "scenario": "confidence_recovery",
+  "description": "A recovery loop where initial escalation fails but inspection succeeds and becomes reinforced.",
+  "runs": 5,
+  "context": {
+    "task": "camera_recalibration",
+    "risk_level": "benchmark_confidence_recovery",
+    "robot_confidence": "recovering"
+  },
+  "options": ["continue_current_task", "pause_and_inspect", "escalate_to_human"],
+  "outcomes": {
+    "escalate_to_human": ["failure", "failure", "failure", "failure", "failure"],
+    "pause_and_inspect": ["success", "success", "success", "success", "success"],
+    "continue_current_task": ["success", "success", "success", "success", "success"]
+  },
+  "default_outcome": "failure"
+}
