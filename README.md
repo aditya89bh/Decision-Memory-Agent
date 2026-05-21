@@ -2,161 +2,216 @@
 
 [![tests](https://github.com/aditya89bh/Decision-Memory-Agent/actions/workflows/tests.yml/badge.svg)](https://github.com/aditya89bh/Decision-Memory-Agent/actions/workflows/tests.yml)
 
-A deterministic agent system that records decisions, rationale, outcomes, and uses memory to improve future choices.
+**A production-oriented decision-memory system for agents that need to remember what they decided, why they decided it, what happened next, and how that history should change future behavior.**
 
-## Core thesis
-
-Agents should not only make decisions.
-
-They should remember:
-
-- what decision was made
-- why it was made
-- what context shaped it
-- what outcome followed
-- whether the choice was successful
-- how future decisions should change because of it
-
-This repository explores **decision memory** as a core primitive for more reliable agents.
-
-## What this repository demonstrates
-
-This repo implements a small deterministic decision-memory loop:
+Most agent systems can produce actions. Fewer can explain how past decisions changed later choices. This repository implements a deterministic, inspectable memory loop for outcome-aware decision making.
 
 ```text
-Decision Context → Candidate Options → Decision → Rationale → Memory Record → Outcome → Future Decision Bias
+Context -> Options -> Decision -> Rationale -> Memory -> Outcome -> Future Decision Bias
 ```
 
-Instead of treating each decision as isolated, the agent stores past decision records and uses them to score future options.
+## What is implemented
 
-## Why this matters
-
-Most agents make choices without remembering the long-term consequences of earlier choices.
-
-That creates predictable failure modes:
-
-- repeated bad decisions
-- no memory of rationale
-- no learning from outcomes
-- no inspectable decision trail
-- no way to debug why an agent changed behavior
-- no continuity between decisions across time
-
-Decision memory gives agents a way to connect action, consequence, and future judgment.
-
-## Architecture
-
-```text
-Scenario Input
-    ↓
-Decision Agent
-    ↓
-Option Scoring
-    ↓
-Decision Record
-    ↓
-Memory Store
-    ↓
-Outcome Update
-    ↓
-Future Decision Influence
-```
-
-| Component | Role |
-|---|---|
-| `DecisionRecord` | Stores one decision, rationale, context, selected option, and outcome |
-| `MemoryStore` | Keeps decision records and retrieves relevant past decisions |
-| `DecisionAgent` | Scores options using current context and past memory |
-| `Evaluator` | Measures decision quality and memory influence |
-| `run_demo.py` | Runs a deterministic factory decision-memory scenario |
+| Capability | Status |
+|---|---:|
+| Typed decision records with Pydantic validation | Implemented |
+| SQLite-backed persistent memory store | Implemented |
+| Installable CLI command | Implemented |
+| Structured logs with trace IDs | Implemented |
+| Benchmark and evaluation harness | Implemented |
+| Scenario-driven JSON execution | Implemented |
+| Unit and integration tests | 21 passing |
+| Production readiness roadmap | Documented |
 
 ## Quick start
 
 ```bash
-python -m venv .venv
+git clone https://github.com/aditya89bh/Decision-Memory-Agent.git
+cd Decision-Memory-Agent
+python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e .[dev]
-python run_demo.py
+pip install -e .[dev]
 ```
 
-## Run a scenario from JSON
+Run a scenario:
 
 ```bash
 decision-memory examples/factory_decision_scenario.json
 ```
 
-You can also run the module directly during development:
-
-```bash
-PYTHONPATH=src python3 -m decision_memory.cli examples/factory_decision_scenario.json
-```
-
-The CLI loads the scenario, runs a deterministic decision, prints the context, selected option, rationale, and outcome, and persists the decision to `decision_memory.db` using `SQLiteMemoryStore`.
-
-## Run tests
+Run tests:
 
 ```bash
 pytest
 ```
 
-## Demo output
+Run benchmarks:
 
-A sample output is included in:
-
-```text
-demo_output.txt
+```bash
+python3 benchmarks/run_benchmarks.py
 ```
 
-The demo shows a two-step memory loop where a failed prior decision changes the next decision under a similar high-risk context.
+## CLI example
+
+```text
+Trace ID: <trace-id>
+Context: {'task': 'cnc_machine_loading', 'risk_level': 'high', 'robot_confidence': 'low'}
+Selected option: escalate_to_human
+Rationale: {'selected_option': 'escalate_to_human', 'selected_score': 3, ...}
+Outcome: None
+```
+
+Each CLI run persists the decision to SQLite and emits structured trace logs.
+
+## Benchmark snapshot
+
+Latest benchmark run across repeated decision-memory scenarios:
+
+| Metric | Value |
+|---|---:|
+| Total runs | 23 |
+| Memory-influenced decisions | 18 |
+| Success rate | 0.91 |
+| Failure rate | 0.09 |
+| Escalation rate | 0.70 |
+| Improvement after failure | 1.00 |
+
+The benchmark harness tests repeated failures, repeated successes, unsafe high-risk contexts, confidence recovery, and escalation-heavy scenarios.
+
+## Why this matters
+
+Agents that do not remember consequences tend to repeat mistakes.
+
+A decision-memory system makes the decision trail explicit:
+
+- the situation that produced the decision
+- the options the agent considered
+- the selected action
+- the rationale for that action
+- the outcome that followed
+- the way that outcome influenced future scoring
+
+This makes agent behavior easier to debug, evaluate, and improve. It also creates a bridge between planning agents, reflection agents, memory systems, and embodied robotics agents where decisions have operational consequences.
+
+## Architecture
+
+```text
+JSON Scenario
+    |
+    v
+DecisionAgent
+    |
+    v
+Option Scoring + Memory Adjustment
+    |
+    v
+DecisionRecord
+    |
+    v
+SQLiteMemoryStore
+    |
+    v
+Outcome + Evaluation Metrics
+    |
+    v
+Future Decision Bias
+```
+
+| Component | Role |
+|---|---|
+| `DecisionRecord` | Pydantic model for context, options, selected option, rationale, and outcome |
+| `MemoryStore` | In-memory store for deterministic prototype flows |
+| `SQLiteMemoryStore` | Durable memory store backed by SQLite |
+| `DecisionAgent` | Scores options using current context and prior memory |
+| `Evaluator` | Measures decision changes, memory influence, and outcome improvement |
+| `decision-memory` | Installable CLI for running JSON scenarios |
+| `benchmarks/` | Repeatable evaluation suite for memory-influenced decisions |
+
+## Memory loop diagram
+
+```text
+[Current Context]
+        |
+        v
+[Candidate Options]
+        |
+        v
+[Score Options]
+        |
+        v
+[Retrieve Similar Memories]
+        |
+        v
+[Apply Success/Failure Adjustments]
+        |
+        v
+[Select Decision]
+        |
+        v
+[Persist Decision Record]
+        |
+        v
+[Attach Outcome]
+        |
+        v
+[Influence Future Decisions]
+```
+
+## Demo and media
+
+Planned visual assets:
+
+| Asset | Status |
+|---|---:|
+| Terminal GIF demo | Planned |
+| Benchmark screenshot | Planned |
+| Architecture diagram | Markdown version included |
+| Memory loop diagram | Markdown version included |
 
 ## Repository structure
 
 ```text
 Decision-Memory-Agent/
-├── README.md
-├── ROADMAP.md
-├── requirements.txt
-├── run_demo.py
-├── decision_record.py
-├── memory_store.py
-├── decision_agent.py
-├── evaluator.py
-├── test_decision_memory.py
-├── factory_decision_scenario.json
-├── demo_output.txt
+├── src/decision_memory/
+│   ├── decision_agent.py
+│   ├── decision_record.py
+│   ├── evaluator.py
+│   ├── logging_utils.py
+│   ├── memory_store.py
+│   ├── sqlite_store.py
+│   └── cli.py
+├── tests/
+├── examples/
+├── benchmarks/
+│   ├── scenarios/
+│   ├── results/
+│   └── run_benchmarks.py
 ├── docs/
-│   └── architecture.md
-└── .github/
-    └── workflows/
-        └── tests.yml
+├── pyproject.toml
+├── requirements.txt
+└── README.md
 ```
 
-## Current status
+## Production roadmap
 
-```text
-Runnable deterministic prototype with tests and CI
-```
+Implemented production-oriented layers:
 
-Implemented:
+1. Package structure under `src/`
+2. Pydantic typed records
+3. SQLite persistence
+4. Installable CLI
+5. Structured trace logging
+6. Benchmark harness
+7. CI and test suite
 
-1. Decision record primitive
-2. Memory store
-3. Memory-aware decision scoring
-4. Outcome update loop
-5. Evaluator
-6. Runnable demo
-7. Unit tests
-8. Sample scenario
-9. Sample output
-10. GitHub Actions CI
+Next production layers:
 
-## Next improvements
-
-1. Move source files into a proper package structure.
-2. Add richer scenario examples.
-3. Capture real local output after laptop run.
-4. Add a visual decision-memory diagram.
-5. Add robotics-oriented examples with task risk, operator availability, and confidence thresholds.
+1. richer memory retrieval beyond exact context-key matching
+2. configurable scoring policies
+3. schema migration support for persistent records
+4. richer benchmark reporting
+5. optional API layer
+6. Dockerized execution environment
 
 ## Related directions
 
