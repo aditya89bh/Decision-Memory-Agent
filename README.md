@@ -76,13 +76,21 @@ Future Decision Influence
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-python run_demo.py
+PYTHONPATH=src python3 run_demo.py
 ```
+
+## Run a scenario from JSON
+
+```bash
+PYTHONPATH=src python3 -m decision_memory.cli examples/factory_decision_scenario.json
+```
+
+The CLI loads the scenario, runs a deterministic decision, prints the context, selected option, rationale, and outcome, and persists the decision to `decision_memory.db` using `SQLiteMemoryStore`.
 
 ## Run tests
 
 ```bash
-python -m pytest test_decision_memory.py
+PYTHONPATH=src pytest
 ```
 
 ## Demo output
